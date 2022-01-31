@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body onload="renderPageOnload()">
+    <audio
+      id="incorrect-audio"
+      src="http://educationalrc.org/tasks/2/assets/audio/incorrect.mp3"
+    ></audio>
+    <audio
+      id="correct-audio"
+      src="http://educationalrc.org/tasks/2/assets/audio/correct.mp3"
+    ></audio>
+    <div class="page">
+      <div class="header">
+        <div class="header-title">Circle, choose and write.</div>
+        <div class="pop-btns">
+          <button class="btn-4" onclick="showPopUp(0)">
+            <image src="assets/resourse_icon.png" alt="reset-all-icon"></image>
+          </button>
+          <button class="btn-4" onclick="showPopUp(1)">
+            <image src="assets/help_icon.png" alt="reset-all-icon"></image>
+          </button>
+        </div>
+      </div>
+      <div class="pop-up">
+        <button class="close-btn" onclick="closePopUp(0)">
+          <image src="assets/close_icon.png" alt="reset-all-icon"></image>
+        </button>
+        <image src="assets/dummy.jpg" alt="reset-all-icon"></image>
+      </div>
+      <div class="pop-up">
+        <button class="close-btn" onclick="closePopUp(1)">
+          <image src="assets/close_icon.png" alt="reset-all-icon"></image>
+        </button>
+        Help content is here
+      </div>
+      <div class="main-container"></div>
+      <div class="background"></div>
+      <div class="footer">
+        <button class="btn-1" onclick="resetAll()">
+          <image src="/assets/replay_icon.png" alt="reset-all-icon"></image>
+        </button>
+        <div class="sub-footer">
+          <button class="btn-2" onclick="reset(event)">
+            <image src="/assets/reload_icon.png" alt="reset-all-icon"></image>
+          </button>
+          <button class="btn-3" onclick="showAnswer(event)">
+            <image src="/assets/showAns_icon.png" alt="reset-all-icon"></image>
+          </button>
+          <button class="btn-2 prev-btn" onclick="navigatePage('prev')">
+            <image src="/assets/back_icon.png" alt="reset-all-icon"></image>
+          </button>
+          <div class="page-counter"></div>
+          <button class="btn-2 next-btn" onclick="navigatePage('next')">
+            <image src="/assets/next_icon.png" alt="reset-all-icon"></image>
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+  <style>
+    :root {
+      font-size: 1.9vh;
+    }
+    @media (min-aspect-ratio: 4/3) {
+      :root {
+        font-size: 1.8vh;
+      }
+    }
+    @media (max-aspect-ratio: 5/4) {
+      :root {
+        font-size: 1.4vh;
+      }
+    }
+    @media (min-aspect-ratio: 21/9) {
+      :root {
+        font-size: 2vh;
+      }
+    }
+    * {
+      box-sizing: border-box;
+      outline: none;
+    }
+    *:focus {
+      outline: none;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: white;
+    }
+    .page {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      transition: all 1.5s;
+    }
+    @media (orientation: portrait) {
+      .page {
+        width: 100vw;
+        height: 75vw;
+      }
+    }
+    @media (orientation: landscape) {
+      .page {
+        height: 100vh;
+        width: 134vh;
+      }
+    }
+    .header {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 3vh;
+      padding-bottom: 4vh;
+      background-color: white;
+      transition: all 1.5s;
+    }
+    .header-title {
+      font-size: 1.5rem;
+      margin-left: 1vw;
+    }
+    .pop-up {
+      position: absolute;
+      z-index: 10;
+      display: none;
+      margin-top: 10%;
+      background-color: white;
+      border-radius: 1rem;
+      overflow: hidden;
+      background-color: white;
+      border: 0.15rem solid #f5821f;
+      transition: all 1.5s;
+      overflow: auto;
+      padding: 2vw;
+    }
+    @media (orientation: portrait) {
+      .pop-up {
+        width: 98vw;
+        height: 50vw;
+      }
+    }
+    @media (orientation: landscape) {
+      .pop-up {
+        height: 70vh;
+        width: 130vh;
+      }
+    }
+    .background {
+      position: absolute;
+      background-color: #0fa0c5;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+    }
+    .pop-btns {
+      padding-right: 1vw;
+      height: 100%;
+      width: 12%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .main-container {
+      background-color: white;
+      border-radius: 1rem;
+      overflow: hidden;
+      width: 96%;
+      position: absolute;
+      z-index: 2;
+      height: 77%;
+      margin-top: 8.5%;
+      border: 0.15rem solid #f5821f;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 1.5s;
+    }
+    .footer {
+      background-color: #deecf6;
+      width: 100%;
+      height: 15%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1vw;
+      padding-top: 1vh;
+      transition: all 1.5s;
+    }
+    .sub-footer {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 50%;
+      height: 100%;
+    }
+    .btn-1 {
+      height: 50%;
+      width: 6.2%;
+      padding: 0;
+      background-color: transparent;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-2 {
+      height: 50%;
+      width: 12.4%;
+      padding: 0;
+      background-color: transparent;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-3 {
+      height: 50%;
+      width: 15%;
+      padding: 0;
+      background-color: transparent;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-4 {
+      height: 100%;
+      width: 40%;
+      padding: 0;
+      background-color: transparent;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .close-btn {
+      height: 2.5rem;
+      width: 2.5rem;
+      padding: 0;
+      background-color: transparent;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin: 1vh 2vw;
+      position: absolute;
+      right: 0;
+      z-index: 20;
+    }
+
+    .close-btn img {
+      max-width: 100%;
+      max-height: 100% !important;
+    }
+    .btn-2 img {
+      max-width: 100%;
+      max-height: 100% !important;
+    }
+    .btn-1 img {
+      max-width: 100%;
+      max-height: 100% !important;
+    }
+    .btn-4 img {
+      max-width: 100%;
+      max-height: 100% !important;
+    }
+    .btn-3 img {
+      max-width: 100%;
+      height: 100% !important;
+    }
+    .page-counter {
+      border: 0.15rem solid #0fa0c5;
+      background-color: white;
+      border-radius: 0.5rem;
+      height: 50%;
+      width: 20%;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 1.3rem;
+    }
+    .main-container img {
+      width: 57%;
+      margin-top: 8%;
+    }
+    .container1,
+    .container2,
+    .container3,
+    .container4 {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+    .question1,
+    .question2 {
+      width: 60%;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin: 3vh 0;
+      font-size: 2rem;
+    }
+
+    .option {
+      margin: 0 1vw;
+      font-size: 2rem;
+      cursor: pointer;
+      background-color: #0fa0c5;
+      border: 1px solid #0fa0c5;
+      color: white;
+      border-radius: 0.4rem;
+    }
+    .optionIncorrect {
+      opacity: 0.6;
+    }
+    .optionCorrect {
+      position: relative;
+    }
+    .showWrong {
+      position: relative;
+    }
+
+    .optionCorrect::after {
+      content: "";
+      background: transparent url("assets/tikMark.png") no-repeat;
+      top: -95%;
+      background-size: 2rem 2rem;
+      right: -20%;
+      height: 2rem;
+      width: 2rem;
+      position: absolute;
+    }
+    .showWrong::after {
+      content: "";
+      background: transparent url("assets/crossMark.png") no-repeat;
+      top: -95%;
+      background-size: 2rem 2rem;
+      right: -20%;
+      height: 2rem;
+      width: 2rem;
+      position: absolute;
+    }
+  </style>
+  <script>
+    let pageIndex = 0;
+    const pages = [
+      {
+        container: "container1",
+        image: "/1.png",
+        question1: {
+          option_1: { label: "this", value: "correct" },
+          option_2: { label: "that", value: "incorrect" },
+          before: "What's",
+          after: "/",
+          last: "?",
+        },
+        question2: {
+          option_1: { label: "It's", value: "correct" },
+          option_2: { label: "They're", value: "incorrect" },
+          between: "/",
+          after: "an orange school bag.",
+        },
+      },
+      {
+        container: "container2",
+        image: "/2.png",
+        question1: {
+          option_1: { label: "these", value: "incorrect" },
+          option_2: { label: "those", value: "correct" },
+          before: "What are",
+          after: "/",
+          last: "?",
+        },
+        question2: {
+          option_1: { label: "It's", value: "incorrect" },
+          option_2: { label: "They're", value: "correct" },
+          between: "/",
+          after: "green pens.",
+        },
+      },
+      {
+        container: "container3",
+        image: "/3.png",
+        question1: {
+          option_1: { label: "this", value: "incorrect" },
+          option_2: { label: "that", value: "correct" },
+          before: "What's",
+          after: "/",
+          last: "?",
+        },
+        question2: {
+          option_1: { label: "It's", value: "correct" },
+          option_2: { label: "They're", value: "incorrect" },
+          between: "/",
+          after: "a blue calculator.",
+        },
+      },
+      {
+        container: "container4",
+        image: "/4.png",
+        question1: {
+          option_1: { label: "these", value: "correct" },
+          option_2: { label: "those", value: "incorrect" },
+          before: "What's",
+          after: "/",
+          last: "?",
+        },
+        question2: {
+          option_1: { label: "It's", value: "incorrect" },
+          option_2: { label: "They're", value: "correct" },
+          between: "/",
+          after: "yellow compasses.",
+        },
+      },
+    ];
+
+    let questionState = [...Array(pages.length)];
+
+    function renderPage(page) {
+      container = document.getElementsByClassName("main-container")[0];
+
+      container.innerHTML = `<div class="${page.container}">
+
+        <image src="${"./assets" + page.image}" alt="image"></image> 
+        <div class="question1">
+    <span> ${page.question1.before}</span>
+    <button
+      class="option"
+      value="${page.question1.option_1.value}"
+      onclick="check(event)"
+    >
+      ${page.question1.option_1.label}
+    </button>
+    <span> ${page.question1.after}</span>
+    <button
+      class="option"
+      value="${page.question1.option_2.value}"
+      onclick="check(event)"
+    >
+      ${page.question1.option_2.label}
+    </button>
+    <span> ${page.question1.last}</span>
+  </div>
+  <div class="question2">
+    <button
+      class="option"
+      value="${page.question2.option_1.value}"
+      onclick="check(event)"
+    >
+      ${page.question2.option_1.label}
+    </button>
+    <span> ${page.question2.between}</span>
+    <button
+      class="option"
+      value="${page.question2.option_2.value}"
+      onclick="check(event)"
+    >
+      ${page.question2.option_2.label}
+    </button>
+    <span> ${page.question2.after}</span>
+  </div>
+    </div>`;
+    }
+    function renderPageOnload() {
+      document.getElementsByClassName("prev-btn")[0].disabled = true;
+      document.getElementsByClassName("page-counter")[0].innerHTML = `${
+        pageIndex + 1
+      } of ${pages.length}`;
+      renderPage(pages[pageIndex]);
+    }
+
+    function handleNav() {
+      let prevBtn = document.getElementsByClassName("prev-btn")[0];
+      let nextBtn = document.getElementsByClassName("next-btn")[0];
+      if (pageIndex === 0) {
+        prevBtn.disabled = true;
+        nextBtn.disabled = false;
+      } else if (pageIndex < pages.length - 1) {
+        prevBtn.disabled = false;
+        nextBtn.disabled = false;
+      } else if (pageIndex === pages.length - 1) {
+        nextBtn.disabled = true;
+      }
+      document.getElementsByClassName("page-counter")[0].innerHTML = `${
+        pageIndex + 1
+      } of ${pages.length}`;
+      renderPage(pages[pageIndex]);
+
+      if (questionState[pageIndex]) {
+        Object.keys(questionState[pageIndex]).map((key) => {
+          if (questionState[pageIndex][key]) {
+            let container = document.getElementsByClassName(
+              pages[pageIndex].container
+            )[0];
+
+            let question = container.getElementsByClassName(`${key}`)[0];
+
+            let options = question.getElementsByClassName("option");
+            [...options].forEach((option) => {
+              if (option.value === "correct") {
+                option.classList.add("optionCorrect");
+                option.disabled = true;
+              } else if (option.value === "incorrect") {
+                option.classList.add("optionIncorrect");
+                option.disabled = true;
+              }
+            });
+          }
+        });
+      }
+    }
+    function navigatePage(state) {
+      if (state === "next") {
+        pageIndex++;
+        handleNav();
+      } else {
+        pageIndex--;
+        handleNav();
+      }
+    }
+
+    function check(e) {
+      let container = e.target.parentNode.parentNode.className;
+      let questionClassname = e.target.parentNode.className;
+      container = document.getElementsByClassName(container)[0];
+      let question = container.getElementsByClassName(questionClassname)[0];
+      let options = question.getElementsByClassName("option");
+      if (e.target.value === "correct") {
+        [...options].forEach((option) => {
+          if (option.value === "correct") {
+            option.classList.add("optionCorrect");
+            option.disabled = true;
+          } else if (option.value === "incorrect") {
+            option.classList.add("optionIncorrect");
+            option.disabled = true;
+          }
+        });
+
+        document.getElementById("correct-audio").play();
+        questionState[pageIndex] = questionState[pageIndex]
+          ? { [questionClassname]: true, ...questionState[pageIndex] }
+          : { [questionClassname]: true };
+      } else if (e.target.value === "incorrect") {
+        [...options].forEach((option) => {
+          if (option.value === "incorrect") {
+            document.getElementById("incorrect-audio").play();
+            option.classList.add("showWrong");
+            setTimeout(() => {
+              option.classList.remove("showWrong");
+              setTimeout(() => {
+                option.classList.add("showWrong");
+                setTimeout(() => {
+                  option.classList.remove("showWrong");
+                  setTimeout(() => {
+                    option.classList.add("showWrong");
+                    setTimeout(() => {
+                      option.classList.remove("showWrong");
+                    }, 150);
+                  }, 150);
+                }, 150);
+              }, 150);
+            }, 150);
+          }
+        });
+      }
+    }
+    function reset(e) {
+      let highestContainer = e.target.parentNode;
+      let mainContainer = document.getElementsByClassName("main-container")[0];
+      let page = mainContainer.childNodes[0];
+      let options = page.getElementsByClassName("option");
+      [...options].forEach((option) => {
+        option.classList.remove(
+          "optionCorrect",
+          "optionIncorrect",
+          "showWrong"
+        );
+        option.disabled = false;
+      });
+      questionState[pageIndex] = {};
+    }
+    function showAnswer(e) {
+      let highestContainer = e.target.parentNode;
+      let mainContainer = document.getElementsByClassName("main-container")[0];
+      let page = mainContainer.childNodes[0];
+      let options = page.getElementsByClassName("option");
+
+      [...options].forEach((option) => {
+        if (option.value === "correct") {
+          option.classList.add("optionCorrect");
+          option.disabled = true;
+        } else if (option.value === "incorrect") {
+          option.classList.add("optionIncorrect");
+          option.disabled = true;
+        }
+      });
+      questionState[pageIndex] = { question1: true, question2: true };
+    }
+
+    function resetAll() {
+      let options = document.getElementsByClassName("option");
+      [...options].forEach((option) => {
+        option.classList.remove(
+          "optionCorrect",
+          "optionIncorrect",
+          "showWrong"
+        );
+        option.disabled = false;
+      });
+      questionState = [...Array(pages.length)];
+      pageIndex = 0;
+      handleNav();
+    }
+
+    function showPopUp(index) {
+      document.getElementsByClassName("pop-up")[index].style.display = "block";
+    }
+    function closePopUp(index) {
+      document.getElementsByClassName("pop-up")[index].style.display = "none";
+    }
+  </script>
+</html>
